@@ -1,0 +1,13 @@
+{
+  "name": "let-it-ride",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LET IT RIDE — $RIDE landing page",
+  "scripts": {
+    "start": "serve -l 4321",
+    "dev": "serve -l 4321"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}
