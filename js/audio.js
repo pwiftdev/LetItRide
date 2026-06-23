@@ -103,9 +103,12 @@
     if (started) return;
     started = true;
     eq.classList.add("is-visible");
-    setState("STARTING");
+    setState("NOW PLAYING");
     const ok = await play();
-    if (!ok) eq.classList.add("is-idle");
+    if (!ok) {
+      setState("TAP TO PLAY");
+      eq.classList.add("is-idle");
+    }
   }
 
   btn.addEventListener("click", toggle);

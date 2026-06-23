@@ -70,6 +70,11 @@ button{font-family:inherit;cursor:none;background:none;border:none;color:inherit
 .loader__count i{font-style:normal;opacity:.4}
 .loader__bar{width:min(60vw,320px);height:1px;background:var(--line);overflow:hidden}
 .loader__bar span{display:block;height:100%;width:0;background:var(--ink)}
+.loader__enter{
+  opacity:0;visibility:hidden;transform:translateY(14px);pointer-events:none;
+  transition:opacity .5s var(--ease),transform .5s var(--ease),visibility .5s
+}
+.loader__enter.is-visible{opacity:1;visibility:visible;transform:none;pointer-events:auto}
 body.loading{height:100vh;overflow:hidden}
 
 /* ---------- AUDIO EQUALIZER ---------- */

@@ -32,6 +32,7 @@
   const loader = document.getElementById("loader");
   const countEl = document.getElementById("count");
   const barEl = document.getElementById("loaderbar");
+  const enterBtn = document.getElementById("loaderEnter");
 
   function startSite() {
     if (document.body.dataset.ready) return;
@@ -41,10 +42,54 @@
     document.dispatchEvent(new CustomEvent("site:ready"));
   }
 
+  function showEnterButton() {
+    if (!enterBtn || loader?.dataset.enterReady) return;
+    loader.dataset.enterReady = "true";
+
+    if (hasGSAP && !reduced) {
+      gsap.to("#loader .loader__count, #loader .loader__bar", { opacity: 0, duration: 0.35 });
+      enterBtn.hidden = false;
+      gsap.fromTo(enterBtn, { y: 16, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.65, ease: "power3.out", delay: 0.08,
+        onComplete() { enterBtn.classList.add("is-visible"); },
+      });
+    } else {
+      const count = loader?.querySelector(".loader__count");
+      const bar = loader?.querySelector(".loader__bar");
+      if (count) count.style.opacity = "0";
+      if (bar) bar.style.opacity = "0";
+      enterBtn.hidden = false;
+      enterBtn.classList.add("is-visible");
+    }
+  }
+
+  function dismissLoader() {
+    if (hasGSAP && !reduced && loader) {
+      gsap.to("#loader .loader__inner", { yPercent: -10, opacity: 0, duration: 0.5, ease: "power2.in" });
+      gsap.to(enterBtn, { opacity: 0, duration: 0.3 });
+      gsap.to(loader, {
+        yPercent: -100, duration: 0.9, ease: "power4.inOut", delay: 0.15,
+        onComplete() { loader.style.display = "none"; ScrollTrigger.refresh(); },
+      });
+    } else if (loader) {
+      loader.style.display = "none";
+    }
+  }
+
+  function enterSite() {
+    if (document.body.dataset.ready) return;
+    dismissLoader();
+    startSite();
+  }
+
+  enterBtn?.addEventListener("click", enterSite);
+
   function runLoader() {
     if (reduced || !hasGSAP) {
-      if (loader) loader.style.display = "none";
-      startSite();
+      if (countEl) countEl.textContent = "100";
+      if (barEl) barEl.style.width = "100%";
+      gsap?.to?.("#loader .loader__word span", { y: 0, duration: 0.01 });
+      showEnterButton();
       return;
     }
     // reveal loader letters
@@ -59,15 +104,7 @@
         if (countEl) countEl.textContent = v;
         if (barEl) barEl.style.width = v + "%";
       },
-      onComplete() {
-        gsap.to("#loader .loader__inner", { yPercent: -10, opacity: 0, duration: 0.5, ease: "power2.in" });
-        gsap.to("#loader .loader__count, #loader .loader__bar", { opacity: 0, duration: 0.3 });
-        gsap.to(loader, {
-          yPercent: -100, duration: 0.9, ease: "power4.inOut", delay: 0.15,
-          onComplete() { loader.style.display = "none"; ScrollTrigger.refresh(); },
-        });
-        startSite();
-      },
+      onComplete: showEnterButton,
     });
   }
 
@@ -439,8 +476,12 @@
      ========================================================= */
   if (document.readyState === "complete") runLoader();
   else window.addEventListener("load", runLoader);
-  // safety: never get stuck on loader
+  // safety: never get stuck on loader — show enter if progress never finishes
   setTimeout(() => {
-    if (document.body.classList.contains("loading")) { if (loader) loader.style.display = "none"; startSite(); }
+    if (document.body.classList.contains("loading") && !document.body.dataset.ready) {
+      if (countEl) countEl.textContent = "100";
+      if (barEl) barEl.style.width = "100%";
+      showEnterButton();
+    }
   }, 4000);
 })();
