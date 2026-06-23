@@ -5,6 +5,7 @@
   "use strict";
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const isTouch = window.matchMedia("(hover: none)").matches;
+  const isMobileRide = isTouch || window.innerWidth <= 760;
   const hasGSAP = typeof window.gsap !== "undefined";
   if (hasGSAP && window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
 
@@ -202,6 +203,26 @@
   window.addEventListener("scroll", onScroll, { passive: true });
 
   /* =========================================================
+     MOBILE NAV
+     ========================================================= */
+  const navToggle = document.getElementById("navToggle");
+  const navMenu = document.getElementById("navMenu");
+  function closeNav() {
+    nav?.classList.remove("is-open");
+    navToggle?.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("nav-open");
+  }
+  navToggle?.addEventListener("click", () => {
+    const open = nav.classList.toggle("is-open");
+    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    document.body.classList.toggle("nav-open", open);
+  });
+  navMenu?.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeNav));
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && nav?.classList.contains("is-open")) closeNav();
+  });
+
+  /* =========================================================
      COPY CONTRACT
      ========================================================= */
   const CA = "DYTSiPC3u1LLg6je5VhQsxb87uGw5f5poktKfGigpump";
@@ -237,15 +258,17 @@
       });
     });
 
-    /* hero parallax */
-    gsap.utils.toArray("[data-parallax]").forEach((el) => {
-      const amt = parseFloat(el.dataset.parallax) || 0.2;
-      gsap.to(el, {
-        yPercent: amt * 100,
-        ease: "none",
-        scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true },
+    /* hero parallax — desktop only */
+    if (!isTouch) {
+      gsap.utils.toArray("[data-parallax]").forEach((el) => {
+        const amt = parseFloat(el.dataset.parallax) || 0.2;
+        gsap.to(el, {
+          yPercent: amt * 100,
+          ease: "none",
+          scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true },
+        });
       });
-    });
+    }
 
     /* counters */
     gsap.utils.toArray("[data-count]").forEach((el) => {
@@ -261,10 +284,74 @@
       });
     });
 
-    /* horizontal pinned RIDE section */
+    /* horizontal pinned RIDE section — desktop only */
     const track = document.querySelector("[data-ride-track]");
     const pin = document.querySelector("[data-ride-pin]");
-    if (track && pin) {
+
+    function setupRidePanelAnimations(containerAnimation) {
+      const chartLine = document.querySelector(".chart__line");
+      const stOpts = containerAnimation ? { containerAnimation } : {};
+
+      if (chartLine) {
+        gsap.to(chartLine, {
+          strokeDashoffset: 0, ease: "none",
+          scrollTrigger: {
+            trigger: ".panel--chart",
+            start: containerAnimation ? "left 75%" : "top 72%",
+            end: containerAnimation ? "right 70%" : "top 38%",
+            scrub: true,
+            ...stOpts,
+          },
+        });
+        gsap.to(".chart__dot", {
+          opacity: 1, duration: 0.3,
+          scrollTrigger: {
+            trigger: ".panel--chart",
+            start: containerAnimation ? "center 60%" : "top 65%",
+            toggleActions: "play none none reverse",
+            ...stOpts,
+          },
+        });
+        gsap.to(".chart__jeet, .chart__top", {
+          opacity: 1, duration: 0.4, stagger: 0.1,
+          scrollTrigger: {
+            trigger: ".panel--chart",
+            start: containerAnimation ? "left 50%" : "top 70%",
+            toggleActions: "play none none reverse",
+            ...stOpts,
+          },
+        });
+      }
+
+      gsap.utils.toArray(".panel--beat .panel__cmd").forEach((cmd) => {
+        gsap.from(cmd, {
+          opacity: 0, x: containerAnimation ? 60 : 40, ease: "power3.out",
+          scrollTrigger: {
+            trigger: cmd,
+            start: containerAnimation ? "left 80%" : "top 88%",
+            end: containerAnimation ? "left 40%" : "top 58%",
+            scrub: true,
+            ...stOpts,
+          },
+        });
+      });
+
+      const punch = document.querySelector("[data-ride-punch]");
+      if (punch) {
+        gsap.from(punch, {
+          opacity: 0, x: containerAnimation ? 60 : 40, ease: "power3.out",
+          scrollTrigger: {
+            trigger: punch,
+            start: containerAnimation ? "left 80%" : "top 88%",
+            end: containerAnimation ? "left 40%" : "top 58%",
+            scrub: true,
+            ...stOpts,
+          },
+        });
+      }
+    }
+
+    if (track && pin && !isMobileRide) {
       const getScroll = () => track.scrollWidth - window.innerWidth;
       const tween = gsap.to(track, {
         x: () => -getScroll(),
@@ -275,41 +362,10 @@
           pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1,
         },
       });
-
-      /* chart draws as the chart panel comes in */
-      const chartLine = document.querySelector(".chart__line");
-      if (chartLine) {
-        gsap.to(chartLine, {
-          strokeDashoffset: 0, ease: "none",
-          scrollTrigger: {
-            trigger: ".panel--chart", containerAnimation: tween,
-            start: "left 75%", end: "right 70%", scrub: true,
-          },
-        });
-        gsap.to(".chart__dot", {
-          opacity: 1, duration: 0.3,
-          scrollTrigger: { trigger: ".panel--chart", containerAnimation: tween, start: "center 60%", toggleActions: "play none none reverse" },
-        });
-        gsap.to(".chart__jeet, .chart__top", {
-          opacity: 1, duration: 0.4, stagger: 0.1,
-          scrollTrigger: { trigger: ".panel--chart", containerAnimation: tween, start: "left 50%", toggleActions: "play none none reverse" },
-        });
-      }
-      /* beat panels emphasis */
-      gsap.utils.toArray(".panel--beat .panel__cmd").forEach((cmd) => {
-        gsap.from(cmd, {
-          opacity: 0, x: 60, ease: "power3.out",
-          scrollTrigger: { trigger: cmd, containerAnimation: tween, start: "left 80%", end: "left 40%", scrub: true },
-        });
-      });
-
-      const punch = document.querySelector("[data-ride-punch]");
-      if (punch) {
-        gsap.from(punch, {
-          opacity: 0, x: 60, ease: "power3.out",
-          scrollTrigger: { trigger: punch, containerAnimation: tween, start: "left 80%", end: "left 40%", scrub: true },
-        });
-      }
+      setupRidePanelAnimations(tween);
+    } else if (track && pin) {
+      gsap.set(track, { x: 0, clearProps: "transform" });
+      setupRidePanelAnimations(null);
     }
 
     /* versus words split + reveal */

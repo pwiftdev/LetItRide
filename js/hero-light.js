@@ -7,6 +7,7 @@
   if (!hero || !orb || !lit) return;
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isTouch = window.matchMedia("(hover: none)").matches;
   const hasGSAP = typeof window.gsap !== "undefined";
   let wanderTween = null;
 
@@ -32,7 +33,7 @@
   }
 
   function wander() {
-    if (!hasGSAP || reduced) return;
+    if (!hasGSAP || reduced || isTouch) return;
     const target = randomPoint();
     wanderTween = gsap.to(orb, {
       left: target.left,
@@ -47,7 +48,7 @@
   function start() {
     syncLitMask();
 
-    if (reduced || !hasGSAP) {
+    if (reduced || !hasGSAP || isTouch) {
       orb.style.left = "52%";
       orb.style.top = "44%";
       orb.style.transform = "translate(-50%, -50%)";
