@@ -42,6 +42,7 @@
 
 <!-- PRELOADER -->
 <div class="loader" id="loader">
+  <div class="loader__roulette" data-loader-roulette aria-hidden="true"></div>
   <div class="loader__inner">
     <div class="loader__word"><span>L</span><span>E</span><span>T</span><span class="sp" aria-hidden="true"></span><span>I</span><span>T</span></div>
     <div class="loader__word loader__word--ride"><span>R</span><span>I</span><span>D</span><span>E</span></div>
@@ -143,12 +144,13 @@
   <!-- ============ THE TEST ============ -->
   <section class="test" id="test">
     <div class="sec-tag"><span>01</span> THE TEST</div>
-    <div class="test__lines">
-      <p class="reveal-line">Every trench is the <em>same</em> test.</p>
-      <p class="reveal-line">You ape in.</p>
-      <p class="reveal-line">The chart moves.</p>
-      <p class="reveal-line big">And <span class="strike">99%</span> of you <span class="jeet">JEET</span> on the green.</p>
-      <p class="reveal-line dim">2x and out — while it 50x's without you.</p>
+    <div class="test__layout">
+      <div class="test__lines">
+        <p class="reveal-line">Every trench. <em>Same test.</em></p>
+        <p class="reveal-line big"><span class="strike">99%</span> <span class="jeet">JEET</span> on green.</p>
+        <p class="reveal-line dim">While it 50x's without you.</p>
+      </div>
+      <div class="test__wheel" data-test-roulette aria-hidden="true"></div>
     </div>
 
     <div class="test__stat">
@@ -173,17 +175,28 @@
       <div class="ride__track" data-ride-track>
 
         <article class="panel panel--intro">
-          <div class="sec-tag light"><span>02</span> THE RUN</div>
-          <h2 class="panel__h">HE<br>NEVER<br>SOLD.</h2>
-          <p class="panel__p">His friend begging him to pull out — that's your group chat. That's the voice at 3x whispering <em>"take your profit."</em></p>
+          <div class="panel__body">
+            <div class="sec-tag light"><span>02</span> THE RUN</div>
+            <h2 class="panel__h">HE<br>NEVER<br>SOLD.</h2>
+            <p class="panel__p">His friend begging him to pull out — that's your group chat. That's the voice at 3x whispering <em>"take your profit."</em></p>
+          </div>
+          <figure class="panel__char">
+            <img src="assets/gambler.png" alt="" loading="lazy" decoding="async" />
+          </figure>
         </article>
 
         <article class="panel panel--beat">
+          <figure class="panel__char panel__char--float">
+            <img src="assets/idontwant.png" alt="" loading="lazy" decoding="async" />
+          </figure>
           <span class="panel__step">it ran.</span>
           <span class="panel__cmd">LET IT<br>RIDE.</span>
         </article>
 
         <article class="panel panel--beat">
+          <figure class="panel__char panel__char--float">
+            <img src="assets/letitridecharacter.png" alt="" loading="lazy" decoding="async" />
+          </figure>
           <span class="panel__step">it ran again.</span>
           <span class="panel__cmd">LET IT<br>RIDE.</span>
         </article>
@@ -378,8 +391,19 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
 <script src="js/main.js"></script>
 <script src="js/audio.js"></script>
+<script src="js/roulette-orbs.js"></script>
+<script type="module" src="js/loader-roulette.js"></script>
+<script type="module" src="js/roulette-wheel.js"></script>
 <script src="js/memes.js"></script>
 </body>
 </html>

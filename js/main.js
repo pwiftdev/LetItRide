@@ -64,7 +64,9 @@
   }
 
   function dismissLoader() {
+    document.dispatchEvent(new CustomEvent("loader:dismiss"));
     if (hasGSAP && !reduced && loader) {
+      gsap.to(".loader__roulette", { opacity: 0, duration: 0.35 }, 0);
       gsap.to("#loader .loader__inner", { yPercent: -10, opacity: 0, duration: 0.5, ease: "power2.in" });
       gsap.to(enterBtn, { opacity: 0, duration: 0.3 });
       gsap.to(loader, {
