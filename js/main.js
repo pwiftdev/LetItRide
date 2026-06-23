@@ -34,8 +34,11 @@
   const barEl = document.getElementById("loaderbar");
 
   function startSite() {
+    if (document.body.dataset.ready) return;
+    document.body.dataset.ready = "true";
     document.body.classList.remove("loading");
     initHeroIntro();
+    document.dispatchEvent(new CustomEvent("site:ready"));
   }
 
   function runLoader() {

@@ -28,6 +28,18 @@
 <!-- SCROLL PROGRESS -->
 <div class="scrollbar" aria-hidden="true"><span class="scrollbar__fill"></span></div>
 
+<!-- AUDIO / EQUALIZER -->
+<div class="eq" id="eq" aria-live="polite">
+  <button class="eq__btn" id="eqBtn" type="button" aria-pressed="false" aria-label="Play Let It Ride" data-cursor="hover">
+    <span class="eq__bars" id="eqBars" aria-hidden="true"></span>
+    <span class="eq__meta">
+      <span class="eq__track">LET IT RIDE</span>
+      <span class="eq__state" id="eqState">LOADING</span>
+    </span>
+  </button>
+  <audio id="rideAudio" src="assets/LET IT RIDE ! ( MUSIC VIDEO ).mp3" preload="auto" loop></audio>
+</div>
+
 <!-- PRELOADER -->
 <div class="loader" id="loader">
   <div class="loader__inner">
@@ -360,6 +372,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/main.js"></script>
+<script src="js/audio.js"></script>
 <script src="js/memes.js"></script>
 </body>
 </html>
