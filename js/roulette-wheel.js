@@ -12,7 +12,6 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
   if (!mount || !section) return;
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const isTouch = window.matchMedia("(hover: none)").matches;
   const hasGSAP = typeof window.gsap !== "undefined";
   const MODEL = "assets/rou_lp_test_06.glb";
   const TILT = -0.38;
@@ -28,7 +27,6 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
   let inView = true;
   let entered = false;
   let modelReady = false;
-  let rendering = false;
 
   function lookAtWheel() {
     camera.lookAt(lookTarget);
@@ -66,7 +64,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
     }
 
     renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isTouch || window.innerWidth <= 760 ? 1.5 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
@@ -111,7 +109,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
         resize();
         setEntranceCamera(root);
         setupScroll();
-        if (!reduced) startRender();
+        if (!reduced) loop();
         maybeEnter();
       },
       undefined,
@@ -187,20 +185,10 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
       trigger: section,
       start: "top 85%",
       end: "bottom 15%",
-      onEnter: () => { inView = true; targetSpin = 0.052; startRender(); },
-      onEnterBack: () => { inView = true; targetSpin = 0.052; startRender(); },
+      onEnter: () => { inView = true; targetSpin = 0.052; },
+      onEnterBack: () => { inView = true; targetSpin = 0.052; },
       onLeave: () => { inView = false; targetSpin = 0.008; },
       onLeaveBack: () => { inView = false; targetSpin = 0.008; },
-    });
-
-    ScrollTrigger.create({
-      trigger: section,
-      start: "top bottom",
-      end: "bottom top",
-      onEnter: startRender,
-      onEnterBack: startRender,
-      onLeave: stopRender,
-      onLeaveBack: stopRender,
     });
 
     ScrollTrigger.refresh();
@@ -224,21 +212,8 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
     }
   }
 
-  function startRender() {
-    if (rendering || reduced || !renderer) return;
-    rendering = true;
-    if (!raf) loop();
-  }
-
-  function stopRender() {
-    rendering = false;
-    cancelAnimationFrame(raf);
-    raf = 0;
-  }
-
   function loop() {
     raf = requestAnimationFrame(loop);
-    if (!rendering) return;
     if (wheel && entered) {
       const t = performance.now() * 0.001;
       const roll = inView ? 0.018 + Math.sin(t * 1.4) * 0.008 : 0.006;

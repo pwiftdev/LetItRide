@@ -64,30 +64,21 @@
   const BASE = "assets/memes/";
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const isTouch = window.matchMedia("(hover: none)").matches;
   const hasGSAP = typeof window.gsap !== "undefined";
-
-  function gridConfig() {
-    const w = window.innerWidth;
-    if (w <= 520) return { cols: 4, rows: 10, slabs: 2, strips: 2 };
-    if (w <= 760 || isTouch) return { cols: 6, rows: 8, slabs: 2, strips: 2 };
-    return { cols: COLS, rows: ROWS, slabs: SLABS_PER_STRIP, strips: STRIP_COUNT };
-  }
 
   function memeSrc(file) {
     return BASE + encodeURIComponent(file).replace(/%2F/g, "/");
   }
 
   function buildTrack() {
-    const cfg = gridConfig();
     const track = document.createElement("div");
     track.className = "memes__track";
 
-    for (let r = 0; r < cfg.strips; r++) {
+    for (let r = 0; r < STRIP_COUNT; r++) {
       const strip = document.createElement("div");
       strip.className = "memes__strip";
-      for (let c = 0; c < cfg.slabs; c++) {
-        strip.appendChild(buildSlab(r * cfg.slabs + c, cfg));
+      for (let c = 0; c < SLABS_PER_STRIP; c++) {
+        strip.appendChild(buildSlab(r * SLABS_PER_STRIP + c));
       }
       track.appendChild(strip);
     }
@@ -95,10 +86,10 @@
     return track;
   }
 
-  function buildSlab(seed = 0, cfg = gridConfig()) {
+  function buildSlab(seed = 0) {
     const slab = document.createElement("div");
     slab.className = "memes__slab";
-    const total = cfg.cols * cfg.rows;
+    const total = COLS * ROWS;
 
     for (let i = 0; i < total; i++) {
       const file = MEME_FILES[(i + seed * 7) % MEME_FILES.length];
@@ -169,60 +160,39 @@
     const strip = track.querySelector(".memes__strip");
     if (!slab || !strip) return;
 
-    let slabW = slab.offsetWidth;
-    let stripH = strip.offsetHeight;
+    const slabW = slab.offsetWidth;
+    const stripH = strip.offsetHeight;
     const drift = { p: 0 };
-    const loops = isTouch ? 120 : 500;
+    const loops = 500;
     const driftYRatio = 0.14;
-    let driftTween = null;
 
     if (!hasGSAP || reduced) {
       gsap?.set?.(tilt, { rotateX: 14, rotateY: -10, rotateZ: -2 });
       return;
     }
 
-    gsap.set(tilt, {
-      rotateX: isTouch ? 12 : 18,
-      rotateY: isTouch ? -8 : -14,
-      rotateZ: isTouch ? -2 : -3,
-      transformPerspective: 1400,
+    gsap.set(tilt, { rotateX: 18, rotateY: -14, rotateZ: -3, transformPerspective: 1400 });
+
+    gsap.to(drift, {
+      p: slabW * loops,
+      duration: 70 * loops,
+      ease: "none",
+      onUpdate() {
+        const x = drift.p % slabW;
+        const y = (drift.p * driftYRatio) % stripH;
+        track.style.transform = `translate3d(${-x}px, ${-y}px, 0)`;
+      },
     });
 
-    function runDrift() {
-      slabW = slab.offsetWidth || slabW;
-      stripH = strip.offsetHeight || stripH;
-      drift.p = 0;
-      driftTween?.kill();
-      driftTween = gsap.to(drift, {
-        p: slabW * loops,
-        duration: (isTouch ? 110 : 70) * loops,
-        ease: "none",
-        onUpdate() {
-          const x = drift.p % slabW;
-          const y = (drift.p * driftYRatio) % stripH;
-          track.style.transform = `translate3d(${-x}px, ${-y}px, 0)`;
-        },
+    gsap.utils.toArray(track.querySelectorAll(".memes__card")).forEach((card, i) => {
+      gsap.to(card, {
+        y: "+=14",
+        duration: 2.8 + (i % 5) * 0.35,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+        delay: (i % 9) * 0.15,
       });
-    }
-
-    runDrift();
-
-    if (!isTouch) {
-      gsap.utils.toArray(track.querySelectorAll(".memes__card")).forEach((card, i) => {
-        gsap.to(card, {
-          y: "+=14",
-          duration: 2.8 + (i % 5) * 0.35,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1,
-          delay: (i % 9) * 0.15,
-        });
-      });
-    }
-
-    window.addEventListener("resize", () => {
-      clearTimeout(initDrift._rt);
-      initDrift._rt = setTimeout(runDrift, 180);
     });
   }
 
