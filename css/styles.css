@@ -191,9 +191,14 @@ h2,
 .hero{position:relative;min-height:100svh;padding:clamp(92px,13vh,140px) var(--pad) clamp(18px,3vh,30px);
   display:flex;flex-direction:column;justify-content:center;gap:clamp(20px,3vh,40px);overflow:hidden}
 .hero__ghost{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0}
-.hero__ghost span{font-family:"Anton",sans-serif;font-size:42vw;line-height:1;color:transparent;
-  -webkit-text-stroke:1px rgba(246,244,239,.07);white-space:nowrap;
+.hero__ghost-stack{position:relative;font-family:"Anton",sans-serif;font-size:42vw;line-height:1;white-space:nowrap}
+.hero__ghost-outline{display:block;color:transparent;-webkit-text-stroke:1px rgba(246,244,239,.07);
   animation:ride-edge-flow 14s linear infinite;will-change:filter}
+.hero__ghost-lit{position:absolute;inset:0;color:var(--ink);-webkit-text-stroke:1px rgba(246,244,239,.28);
+  -webkit-mask-image:radial-gradient(circle var(--hero-light-r,140px) at var(--hero-light-x,-999px) var(--hero-light-y,-999px),
+    #000 0%,rgba(0,0,0,.65) 38%,transparent 68%);
+  mask-image:radial-gradient(circle var(--hero-light-r,140px) at var(--hero-light-x,-999px) var(--hero-light-y,-999px),
+    #000 0%,rgba(0,0,0,.65) 38%,transparent 68%)}
 @keyframes ride-edge-flow{
   0%{filter:drop-shadow(4px 0 6px rgba(220,38,38,.28)) drop-shadow(2px 0 4px rgba(220,38,38,.1))}
   12.5%{filter:drop-shadow(3px 3px 6px rgba(220,38,38,.28)) drop-shadow(1.5px 1.5px 4px rgba(220,38,38,.1))}
@@ -205,6 +210,10 @@ h2,
   87.5%{filter:drop-shadow(3px -3px 6px rgba(220,38,38,.28)) drop-shadow(1.5px -1.5px 4px rgba(220,38,38,.1))}
   100%{filter:drop-shadow(4px 0 6px rgba(220,38,38,.28)) drop-shadow(2px 0 4px rgba(220,38,38,.1))}
 }
+.hero__light{position:absolute;width:clamp(160px,26vw,320px);aspect-ratio:1;border-radius:50%;pointer-events:none;z-index:1;
+  left:50%;top:42%;
+  background:radial-gradient(circle,rgba(255,255,255,.2) 0%,rgba(255,255,255,.07) 32%,rgba(255,255,255,.02) 54%,transparent 72%);
+  mix-blend-mode:soft-light;opacity:0;will-change:left,top,opacity,transform}
 
 .hero__main{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) clamp(420px,50vw,680px);
   gap:clamp(24px,4vw,70px);align-items:center;max-width:min(1680px,100%);width:100%;margin:0 auto}
@@ -534,8 +543,10 @@ body.meme-modal-open{overflow:hidden}
    ========================================================= */
 .cta{padding:clamp(90px,16vw,220px) var(--pad);text-align:center;background:var(--ink);color:var(--black)}
 .cta__inner{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:30px}
-.cta__h{font-family:"Anton",sans-serif;font-size:clamp(64px,15vw,230px);text-transform:uppercase}
+.cta__h{font-family:"Anton",sans-serif;font-size:min(230px,calc((100vw - 2 * var(--pad)) / 9.3));
+  text-transform:uppercase;white-space:nowrap;max-width:100%;margin-inline:auto}
 .cta__h .char{display:inline-block;transform:translateY(110%)}
+.cta__h-green,.cta__h-green .char{color:#18a839}
 .cta__p{max-width:50ch;font-family:"Instrument Serif",serif;font-style:italic;font-size:clamp(20px,2.6vw,34px);line-height:1.35;opacity:.7}
 .cta__actions{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:10px}
 .cta .btn--solid{background:var(--black);color:var(--ink);border-color:var(--black)}

@@ -75,7 +75,13 @@
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="hero">
-    <div class="hero__ghost" aria-hidden="true"><span data-parallax="0.18">RIDE</span></div>
+    <div class="hero__ghost" aria-hidden="true">
+      <div class="hero__ghost-stack" data-parallax="0.18">
+        <span class="hero__ghost-outline">RIDE</span>
+        <span class="hero__ghost-lit">RIDE</span>
+      </div>
+    </div>
+    <div class="hero__light" aria-hidden="true"></div>
 
     <div class="hero__main">
       <div class="hero__left">
@@ -345,7 +351,7 @@
   <!-- ============ CTA ============ -->
   <section class="cta" id="cta">
     <div class="cta__inner">
-      <h2 class="cta__h"><span data-split>HOLD</span> <span data-split>THE</span> <span data-split>GREEN.</span></h2>
+      <h2 class="cta__h"><span data-split>HOLD</span> <span data-split>THE</span> <span class="cta__h-green" data-split>GREEN.</span></h2>
       <p class="cta__p">That's the whole game. Everyone catches the entry. Winners hold when every cell screams sell.</p>
       <div class="cta__actions">
         <a class="btn btn--solid btn--lg" href="https://pump.fun/coin/DYTSiPC3u1LLg6je5VhQsxb87uGw5f5poktKfGigpump" target="_blank" rel="noopener" data-cursor="hover" data-magnetic><span>BUY $RIDE</span></a>
@@ -400,6 +406,7 @@
 }
 </script>
 <script src="js/main.js"></script>
+<script src="js/hero-light.js"></script>
 <script src="js/audio.js"></script>
 <script src="js/roulette-orbs.js"></script>
 <script type="module" src="js/loader-roulette.js"></script>
