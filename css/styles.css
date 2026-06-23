@@ -487,7 +487,13 @@ body.meme-modal-open{overflow:hidden}
 .footer__ca{display:flex;align-items:center;gap:10px;font:400 11px/1 "Space Mono",monospace;opacity:.6;
   border:1px solid var(--line);border-radius:30px;padding:9px 14px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .footer__ca span{font-weight:700;opacity:1}
-.footer__fine{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:24px;
+.footer__credit{
+  margin-top:28px;text-align:center;font:400 11px/1.4 "Space Mono",monospace;letter-spacing:.06em;opacity:.5
+}
+.footer__credit a{opacity:1;text-decoration:underline;text-underline-offset:3px;transition:opacity .3s}
+.footer__credit a:hover{opacity:.75}
+.footer__heart{display:inline-block;color:var(--ink);opacity:.85}
+.footer__fine{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:16px;
   font:400 11px/1.4 "Space Mono",monospace;opacity:.4}
 
 /* ---------- REVEAL HELPERS ---------- */
