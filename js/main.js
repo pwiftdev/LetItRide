@@ -163,12 +163,10 @@
      COPY CONTRACT
      ========================================================= */
   const CA = "DYTSiPC3u1LLg6je5VhQsxb87uGw5f5poktKfGigpump";
-  const toast = document.getElementById("toast");
   function copyCA() {
     const done = () => {
       const state = document.getElementById("caState");
       if (state) { state.textContent = "COPIED ✓"; setTimeout(() => (state.textContent = "COPY"), 1600); }
-      if (toast) { toast.classList.add("show"); setTimeout(() => toast.classList.remove("show"), 2000); }
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(CA).then(done).catch(done);
